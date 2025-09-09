@@ -1,0 +1,36 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "eduzap",
+  "type": "module",
+  "keywords": [
+    "pinkoo",
+    "eduzap"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "pinkoo gupta"
+  },
+  "license": "ISC",
+  "author": "pinkoo gupta",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cloudinary": "^2.7.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "express-jwt": "^8.5.1",
+    "js-base64": "^3.7.8",
+    "jwt-decode": "^4.0.0",
+    "mongoose": "^8.0.3",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.6",
+    "redis": "^5.8.2",
+    "socket.io": "^4.8.1"
+  }
+}
