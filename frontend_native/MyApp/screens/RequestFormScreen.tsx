@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image, Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Button, Image, Alert, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 // Use your machine's IP address instead of localhost for physical device testing
 // Find your IP with: ipconfig (Windows) or ifconfig (Mac/Linux)
 const API_BASE = "http://172.27.224.1:4000/api/v1/requests"; // Your computer's IP address
 // Alternative: "http://localhost:4000/api/v1/requests" for emulator
+// For Android emulator: "http://10.0.2.2:4000/api/v1/requests"
+// Ensure same WiFi for physical devices; check firewall/port 4000 open
 
 export default function RequestFormScreen() {
   const [name, setName] = useState("");
@@ -16,17 +18,39 @@ export default function RequestFormScreen() {
 
   // Pick image
   const pickImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: [ImagePicker.MediaType.image],
-    allowsEditing: true,
-    quality: 0.7,
-  });
+    // Request permission first
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Sorry, we need camera roll permissions to make this work!');
+      return;
+    }
 
-  if (!result.canceled && result.assets && result.assets.length > 0) {
-    setImage(result.assets[0].uri); // ✅ use assets[0].uri
-  }
-};
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.7,
+      base64: Platform.OS === 'web', // Get base64 for web to convert to blob
+    });
 
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  // Helper for web: dataURL to Blob
+  const dataURLtoBlob = (dataurl: string) => {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
   // Submit form
   const handleSubmit = async () => {
@@ -42,11 +66,19 @@ export default function RequestFormScreen() {
     formData.append("title", title);
 
     if (image) {
-      formData.append("image", {
-        uri: image,
-        name: "upload.jpg",
-        type: "image/jpeg",
-      } as any);
+      let imageData: any;
+      if (Platform.OS === 'web') {
+        // On web, uri is data URL; convert to File
+        const blob = dataURLtoBlob(image);
+        imageData = new File([blob], "upload.jpg", { type: "image/jpeg" });
+      } else {
+        imageData = {
+          uri: image,
+          name: "upload.jpg",
+          type: "image/jpeg",
+        };
+      }
+      formData.append("image", imageData);
     }
 
     try {
