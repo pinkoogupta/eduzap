@@ -23,6 +23,6 @@ router.get('/sorted', getSortedRequests);
 router.get('/search', searchRequests);
 
 // Delete a request by ID
-router.delete('/:id', deleteRequest);
+router.delete('/del/:id', deleteRequest);
 
 export default router;
