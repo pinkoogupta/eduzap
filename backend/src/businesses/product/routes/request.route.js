@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // Submit a request (single image upload)
-router.post('/', upload.single('image'), createRequest);
+router.post('/create', upload.single('image'), createRequest);
 
 // Fetch all requests
 router.get('/get', getRequests);
