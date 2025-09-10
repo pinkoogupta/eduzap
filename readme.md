@@ -106,6 +106,28 @@ Notes:
 
 ---
 
+
+.env examples
+
+Backend (`backend/.env.example`) — copy → `backend/.env`
+```env
+MONGO_URI=mongodb://username:password@host:port/dbname
+PORT=5000
+REDIS_URL=redis://:password@host:6379
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+JWT_SECRET=your_jwt_secret
+NODE_ENV=development
+```
+
+Frontend (`frontendAdmin/.env.example`) — copy → `frontendAdmin/.env`
+```env
+VITE_API_URL=http://localhost:5000/api/v1
+VITE_SOCKET_URL=http://localhost:5000
+VITE_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
+VITE_GOOGLE_API_KEY=your_google_api_key
+```
 ## Appendix — Short answers (Q1–Q4)
 
 Q1. How to handle 100,000 requests efficiently with a database?
