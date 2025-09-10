@@ -1,71 +1,48 @@
-import React from 'react';
+import React from "react";
 
-const RequestCard = ({ requests, onDelete }) => {
-  const isRecent = (createdAt) => {
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
-    return new Date(createdAt) > oneHourAgo;
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/v1/requests/del/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        onDelete(id); // Callback to refresh data in parent
-        alert('Request deleted successfully');
-      } else {
-        alert('Failed to delete request');
-      }
-    } catch (error) {
-      console.error('Delete error:', error);
-      alert('Error deleting request');
-    }
-  };
+const RequestCard = ({ request, onDelete }) => {
+  const isRecent = new Date() - new Date(request.createdAt) < 60 * 60 * 1000;
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginBottom: '20px' }}>
-      {requests.map((req) => (
-        <div
-          key={req._id}
-          style={{
-            backgroundColor: isRecent(req.createdAt) ? '#fffacd' : 'white', // Highlight recent in light yellow
-            border: '1px solid #ddd',
-            borderRadius: '8px',
-            padding: '15px',
-            width: '300px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          }}
-        >
-          <h3 style={{ margin: '0 0 10px' }}>{req.title}</h3>
-          <p><strong>Name:</strong> {req.name}</p>
-          <p><strong>Phone:</strong> {req.phone}</p>
-          <p><strong>Timestamp:</strong> {new Date(req.createdAt).toLocaleString()}</p>
-          <div>
-            {req.image ? (
-              <img src={req.image} alt="Request" style={{ width: '100%', height: 'auto', borderRadius: '4px', marginBottom: '10px' }} />
-            ) : (
-              <p>No Image</p>
-            )}
-          </div>
-          <button
-            onClick={() => handleDelete(req._id)}
-            style={{
-              padding: '8px 15px',
-              backgroundColor: '#ff4d4f',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              width: '100%',
-            }}
-          >
-            Delete
-          </button>
+    <div className="relative group">
+      <div className={`absolute inset-0 bg-gradient-to-r ${isRecent ? 'from-yellow-400 to-orange-500' : 'from-purple-600 to-pink-600'} rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition duration-300`}></div>
+      <div className={`relative backdrop-blur-xl ${isRecent ? 'bg-white/10 border-yellow-400/30' : 'bg-white/5 border-white/10'} border rounded-2xl p-5 hover:transform hover:scale-105 transition-all duration-300`}>
+        <div className="relative overflow-hidden rounded-xl mb-4">
+          <img
+            src={request.image || "https://via.placeholder.com/150"}
+            alt={request.title}
+            className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500"
+          />
+          {isRecent && (
+            <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-3 py-1 rounded-full font-semibold animate-pulse">
+              NEW
+            </div>
+          )}
         </div>
-      ))}
+        <h2 className="text-xl font-bold text-white mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          {request.title}
+        </h2>
+        <div className="space-y-2 mb-4">
+          <p className="text-purple-200 flex items-center gap-2">
+            <span className="text-pink-400">📞</span> {request.phone}
+          </p>
+          <p className="text-white/80 font-medium flex items-center gap-2">
+            <span className="text-purple-400">👤</span> {request.name}
+          </p>
+          <p className="text-purple-300/60 text-sm flex items-center gap-2">
+            <span className="text-pink-400">🕐</span> {new Date(request.createdAt).toLocaleString()}
+          </p>
+        </div>
+        <button
+          onClick={() => onDelete(request._id)}
+          className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-pink-500/25"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };
+
 
 export default RequestCard;

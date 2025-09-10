@@ -1,53 +1,28 @@
-import React from 'react';
+import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  const handlePrev = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
-    }
-  };
-
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+    <div className="flex justify-center items-center gap-4 mt-12 mb-8">
       <button
-        onClick={handlePrev}
+        onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: currentPage === 1 ? '#ccc' : '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-        }}
+        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
       >
-        Prev
+        ← Prev
       </button>
-      <span style={{ padding: '10px', fontSize: '16px' }}>
+      <span className="px-6 py-3 bg-white/10 backdrop-blur-xl rounded-xl text-white font-semibold border border-white/20">
         Page {currentPage} of {totalPages}
       </span>
       <button
-        onClick={handleNext}
+        onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: currentPage === totalPages ? '#ccc' : '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-        }}
+        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
       >
-        Next
+        Next →
       </button>
     </div>
   );
 };
+
 
 export default Pagination;

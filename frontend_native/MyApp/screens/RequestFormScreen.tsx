@@ -1,13 +1,29 @@
+
+
+
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image, Alert, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  Button, 
+  Image, 
+  Alert, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Platform,
+  ScrollView,
+  Dimensions,
+  StatusBar
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+
+const { width, height } = Dimensions.get('window');
 
 // Use your machine's IP address instead of localhost for physical device testing
-// Find your IP with: ipconfig (Windows) or ifconfig (Mac/Linux)
-const API_BASE = "http://172.27.224.1:4000/api/v1/requests"; // Your computer's IP address
-// Alternative: "http://localhost:4000/api/v1/requests" for emulator
-// For Android emulator: "http://10.0.2.2:4000/api/v1/requests"
-// Ensure same WiFi for physical devices; check firewall/port 4000 open
+const API_BASE = "http://172.27.224.1:4000/api/v1/requests/create";
 
 export default function RequestFormScreen() {
   const [name, setName] = useState("");
@@ -18,7 +34,6 @@ export default function RequestFormScreen() {
 
   // Pick image
   const pickImage = async () => {
-    // Request permission first
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (status !== 'granted') {
@@ -31,7 +46,7 @@ export default function RequestFormScreen() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.7,
-      base64: Platform.OS === 'web', // Get base64 for web to convert to blob
+      base64: Platform.OS === 'web',
     });
 
     if (!result.canceled) {
@@ -68,7 +83,6 @@ export default function RequestFormScreen() {
     if (image) {
       let imageData: any;
       if (Platform.OS === 'web') {
-        // On web, uri is data URL; convert to File
         const blob = dataURLtoBlob(image);
         imageData = new File([blob], "upload.jpg", { type: "image/jpeg" });
       } else {
@@ -85,7 +99,6 @@ export default function RequestFormScreen() {
       const res = await fetch(API_BASE, {
         method: "POST",
         body: formData,
-        // Don't set Content-Type header - let fetch set it automatically for FormData
       });
 
       const data = await res.json();
@@ -108,35 +121,149 @@ export default function RequestFormScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Request Anything, We Deliver in 2 Hours</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Your Name"
-        value={name}
-        onChangeText={setName}
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      
+      {/* Background Gradient */}
+      <LinearGradient
+        colors={['#1a1a2e', '#16213e', '#0f0f23']}
+        style={styles.backgroundGradient}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        keyboardType="phone-pad"
-        value={phone}
-        onChangeText={setPhone}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Request Title"
-        value={title}
-        onChangeText={setTitle}
-      />
+      
+      {/* Floating Background Elements */}
+      <View style={styles.floatingElement1} />
+      <View style={styles.floatingElement2} />
+      <View style={styles.floatingElement3} />
 
-      <TouchableOpacity onPress={pickImage} style={styles.uploadBtn}>
-        <Text style={styles.uploadText}>{image ? "Change Image" : "Pick Image"}</Text>
-      </TouchableOpacity>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header Section */}
+        <View style={styles.header}>
+          <LinearGradient
+            colors={['#8B5CF6', '#EC4899', '#3B82F6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.logoContainer}
+          >
+            <Text style={styles.logoText}>⚡</Text>
+          </LinearGradient>
+          
+          <Text style={styles.mainTitle}>EDUZAP</Text>
+          <Text style={styles.subtitle}>Request Anything, We Deliver in</Text>
+          <LinearGradient
+            colors={['#8B5CF6', '#EC4899']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.timeContainer}
+          >
+            <Text style={styles.timeText}>2 Hours</Text>
+          </LinearGradient>
+        </View>
 
-      {image && <Image source={{ uri: image }} style={styles.preview} />}
+        {/* Form Section */}
+        <View style={styles.formContainer}>
+          <BlurView intensity={20} tint="dark" style={styles.formCard}>
+            
+            {/* Name Input */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Your Name</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your full name"
+                  placeholderTextColor="#666"
+                  value={name}
+                  onChangeText={setName}
+                />
+              </View>
+            </View>
 
-      <Button title={loading ? "Submitting..." : "Submit"} onPress={handleSubmit} disabled={loading} />
+            {/* Phone Input */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Phone Number</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="+91 98765 43210"
+                  placeholderTextColor="#666"
+                  keyboardType="phone-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                />
+              </View>
+            </View>
+
+            {/* Title Input */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Request Title</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="What do you need?"
+                  placeholderTextColor="#666"
+                  value={title}
+                  onChangeText={setTitle}
+                  multiline={true}
+                  numberOfLines={2}
+                />
+              </View>
+            </View>
+
+            {/* Image Upload */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Attach Image (Optional)</Text>
+              <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+                <LinearGradient
+                  colors={image ? ['#10B981', '#059669'] : ['#6366F1', '#8B5CF6']}
+                  style={styles.uploadGradient}
+                >
+                  <Text style={styles.uploadIcon}>
+                    {image ? '✓' : '📷'}
+                  </Text>
+                  <Text style={styles.uploadText}>
+                    {image ? "Image Selected" : "Choose Image"}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            {/* Image Preview */}
+            {image && (
+              <View style={styles.previewContainer}>
+                <Image source={{ uri: image }} style={styles.preview} />
+                <TouchableOpacity 
+                  style={styles.removeImageBtn}
+                  onPress={() => setImage(null)}
+                >
+                  <Text style={styles.removeImageText}>×</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Submit Button */}
+            <TouchableOpacity 
+              onPress={handleSubmit} 
+              disabled={loading}
+              style={styles.submitContainer}
+            >
+              <LinearGradient
+                colors={loading ? ['#666', '#444'] : ['#8B5CF6', '#EC4899']}
+                style={styles.submitButton}
+              >
+                <Text style={styles.submitText}>
+                  {loading ? "Submitting..." : "Submit Request 🚀"}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BlurView>
+        </View>
+
+        {/* Footer */}
+        <Text style={styles.footer}>
+          Powered by AI • Fast • Reliable • Secure
+        </Text>
+      </ScrollView>
     </View>
   );
 }
@@ -144,42 +271,183 @@ export default function RequestFormScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#000",
+    backgroundColor: '#0f0f23',
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
+  backgroundGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  floatingElement1: {
+    position: 'absolute',
+    top: height * 0.1,
+    left: width * 0.1,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    transform: [{ scale: 1.2 }],
+  },
+  floatingElement2: {
+    position: 'absolute',
+    top: height * 0.6,
+    right: width * 0.1,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(236, 72, 153, 0.1)',
+  },
+  floatingElement3: {
+    position: 'absolute',
+    top: height * 0.3,
+    left: width * 0.7,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logoText: {
+    fontSize: 30,
+    color: '#fff',
+  },
+  mainTitle: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 8,
+    letterSpacing: 2,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#A0A0A0',
+    marginBottom: 8,
+  },
+  timeContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  timeText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  formContainer: {
     marginBottom: 30,
   },
-  input: {
+  formCard: {
+    borderRadius: 20,
+    padding: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderWidth: 1,
-    borderColor: "#333",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
-    backgroundColor: "#1a1a1a",
-    color: "#fff",
-    fontSize: 16,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
-  uploadBtn: {
-    backgroundColor: "#007AFF",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 15,
+  inputContainer: {
+    marginBottom: 24,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#E5E7EB',
+    marginBottom: 8,
+  },
+  inputWrapper: {
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  input: {
+    padding: 16,
+    fontSize: 16,
+    color: '#fff',
+    minHeight: 50,
+  },
+  uploadButton: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  uploadGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  uploadIcon: {
+    fontSize: 24,
   },
   uploadText: {
-    color: "#fff",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
+    color: '#fff',
+  },
+  previewContainer: {
+    position: 'relative',
+    marginBottom: 20,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   preview: {
-    width: "100%",
+    width: '100%',
     height: 200,
-    borderRadius: 8,
-    marginBottom: 20,
+    borderRadius: 12,
+  },
+  removeImageBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeImageText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  submitContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginTop: 8,
+  },
+  submitButton: {
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  footer: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 14,
+    marginBottom: 40,
   },
 });

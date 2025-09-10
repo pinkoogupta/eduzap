@@ -1,0 +1,27 @@
+.requests-panel { max-width: 1000px; margin: 0 auto; font-family: system-ui, sans-serif; }
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.search-row { display:flex; gap:8px; align-items:center; }
+.search-input { padding: 8px; min-width: 260px; border: 1px solid #ddd; border-radius: 6px; }
+.btn { padding: 8px 10px; border-radius: 6px; border: 0; background: #eee; cursor: pointer; }
+.btn-danger { background: #ff6b6b; color: white; }
+.widgets { display:flex; gap:8px; }
+.widget { background:#fafafa; border:1px solid #eee; padding:8px 12px; border-radius:6px; text-align:center; }
+.w-title { font-size:12px; color:#666; }
+.w-value { font-weight:700; font-size:18px; }
+.list-header { display:grid; grid-template-columns: 120px 1fr 180px; gap:12px; padding:8px 12px; border-bottom:1px solid #eee; color:#444; font-weight:600; }
+.requests-list { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+.request-row { display:grid; grid-template-columns: 120px 1fr 180px; gap:12px; padding:10px; border-radius:8px; border:1px solid #f1f1f1; align-items:center; background:white; }
+.request-row.recent { background: rgba(255, 249, 215, 0.85); }
+.req-image img { width:100px; height:70px; object-fit:cover; border-radius:6px; }
+.placeholder { width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#f4f4f4; border-radius:6px; color:#888; }
+.req-info .req-title { font-weight:700; }
+.req-info .req-name, .req-info .req-phone { font-size:13px; color:#555; }
+.req-meta { display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+.pagination { display:flex; gap:10px; align-items:center; }
+.page-info { font-size:14px; }
+.bottom-row { display:flex; justify-content:space-between; align-items:flex-start; margin-top:16px; gap:12px; }
+.stats { min-width:220px; background:#fafafa; padding:8px; border-radius:6px; border:1px solid #eee; }
+.stats ul { list-style:none; padding:0; margin:0; }
+.stats li.dup { font-weight:700; color:#b03030; }
+.info { padding:8px; color:#666; }
+.error { padding:8px; color: #fff; background:#ff6b6b; border-radius:6px; }
