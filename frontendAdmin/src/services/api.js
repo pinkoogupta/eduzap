@@ -1,4 +1,4 @@
-const backendUrl=import.meta.env.BASE_URL;
+// const backendUrl=import.meta.env.BASE_URL;
 
 const backendUrl = "http://localhost:4000/api/v1/requests";
 

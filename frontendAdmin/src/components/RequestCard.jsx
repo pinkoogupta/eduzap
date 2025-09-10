@@ -1,21 +1,21 @@
 import React from "react";
 
 const RequestCard = ({ request, onDelete }) => {
-  const isRecent = new Date() - new Date(request.createdAt) < 60 * 60 * 1000;
+  const isToday = new Date(request.createdAt).toDateString() === new Date("2025-09-10").toDateString();
 
   return (
     <div className="relative group">
-      <div className={`absolute inset-0 bg-gradient-to-r ${isRecent ? 'from-yellow-400 to-orange-500' : 'from-purple-600 to-pink-600'} rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition duration-300`}></div>
-      <div className={`relative backdrop-blur-xl ${isRecent ? 'bg-white/10 border-yellow-400/30' : 'bg-white/5 border-white/10'} border rounded-2xl p-5 hover:transform hover:scale-105 transition-all duration-300`}>
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition duration-300"></div>
+      <div className="relative backdrop-blur-xl bg-white/5 border-white/10 border rounded-2xl p-5 hover:transform hover:scale-105 transition-all duration-300">
         <div className="relative overflow-hidden rounded-xl mb-4">
           <img
             src={request.image || "https://via.placeholder.com/150"}
             alt={request.title}
             className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500"
           />
-          {isRecent && (
+          {isToday && (
             <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-3 py-1 rounded-full font-semibold animate-pulse">
-              NEW
+              TODAY
             </div>
           )}
         </div>
@@ -43,6 +43,5 @@ const RequestCard = ({ request, onDelete }) => {
     </div>
   );
 };
-
 
 export default RequestCard;

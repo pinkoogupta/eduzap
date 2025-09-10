@@ -1,12 +1,13 @@
 import React from "react";
 
 const RequestStats = ({ requests }) => {
-  const total = requests.length;
-  const today = requests.filter(
-    (r) => new Date(r.createdAt).toDateString() === new Date().toDateString()
+  const items = requests?.data?.items || [];
+  const total = requests?.data?.total || items.length;
+  const today = items.filter(
+    (r) => new Date(r.createdAt).toDateString() === new Date("2025-09-10").toDateString()
   ).length;
 
-  const titleCounts = requests.reduce((acc, r) => {
+  const titleCounts = items.reduce((acc, r) => {
     acc[r.title] = (acc[r.title] || 0) + 1;
     return acc;
   }, {});
@@ -46,4 +47,5 @@ const RequestStats = ({ requests }) => {
     </div>
   );
 };
+
 export default RequestStats;
