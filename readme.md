@@ -113,7 +113,9 @@ Backend (`backend/.env.example`) — copy → `backend/.env`
 ```env
 MONGO_URI=mongodb://username:password@host:port/dbname
 PORT=5000
-REDIS_URL=redis://:password@host:6379
+REDIS_HOST=---------
+REDIS_PORT=----------
+
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
